@@ -1,10 +1,13 @@
-using BillStatus.Contexts;
+using BillStatus.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
+using System;
 
 namespace BillStatus
 {
@@ -20,7 +23,13 @@ namespace BillStatus
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();   
+            services.AddControllersWithViews();
+            services.AddDbContextPool<BillTypeStore>(
+                options => options.UseMySql(
+                    Configuration.GetConnectionString("DefaultConnection"), 
+                    mySqlOptions => mySqlOptions.ServerVersion(new ServerVersion(new Version(8, 0, 19), ServerType.MySql)
+                )
+            ));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
