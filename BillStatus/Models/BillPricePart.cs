@@ -10,6 +10,7 @@ namespace BillStatus.Models
         public int Id { get; set; }
         public int TypeID { get; set; }
         public BillType Type { get; set; }
+        public string Name { get; set; }
         public double Value { get; set; }
         public bool Constant { get; set; }
     }

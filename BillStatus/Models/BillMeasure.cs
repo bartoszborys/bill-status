@@ -2,7 +2,7 @@
 
 namespace BillStatus.Models
 {
-    public class Measure
+    public class BillMeasure
     {
         public int Id { get; set; }
         public BillType Type { get; set; }
