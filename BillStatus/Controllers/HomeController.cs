@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BillStatus.Models;
+using BillStatus.Models.Contexts;
 
 namespace BillStatus.Controllers
 {
@@ -13,7 +14,7 @@ namespace BillStatus.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, BillTypeStore db)
+        public HomeController(ILogger<HomeController> logger, BillTypeContext db)
         {
             _logger = logger;
         }

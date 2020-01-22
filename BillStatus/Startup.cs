@@ -1,4 +1,5 @@
 using BillStatus.Models;
+using BillStatus.Models.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ namespace BillStatus
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContextPool<BillTypeStore>(
+            services.AddDbContextPool<BillTypeContext>(
                 options => options.UseMySql(
                     Configuration.GetConnectionString("DefaultConnection"), 
                     mySqlOptions => mySqlOptions.ServerVersion(new ServerVersion(new Version(8, 0, 19), ServerType.MySql)
