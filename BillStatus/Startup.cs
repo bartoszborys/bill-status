@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
 using System;
+using System.Globalization;
 
 namespace BillStatus
 {
@@ -25,7 +26,7 @@ namespace BillStatus
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContextPool<BillTypeContext>(
+            services.AddDbContextPool<BillContext>(
                 options => options.UseMySql(
                     Configuration.GetConnectionString("DefaultConnection"), 
                     mySqlOptions => mySqlOptions.ServerVersion(new ServerVersion(new Version(8, 0, 19), ServerType.MySql)
@@ -52,13 +53,17 @@ namespace BillStatus
             app.UseRouting();
 
             app.UseAuthorization();
-
+               
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            var cultureInfo = new CultureInfo("en-US");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
         }
     }
 }

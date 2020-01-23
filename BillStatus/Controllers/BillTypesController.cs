@@ -15,9 +15,9 @@ namespace BillStatus.Controllers
     [Controller]
     public class BillTypesController : Controller
     {
-        private readonly BillTypeContext _context;
+        private readonly BillContext _context;
 
-        public BillTypesController(BillTypeContext context)
+        public BillTypesController(BillContext context)
         {
             _context = context;
         }
@@ -31,19 +31,29 @@ namespace BillStatus.Controllers
 
 
         [HttpGet("create")]
-        public IActionResult Create()
+        public IActionResult Create([FromQuery] int Count)
         {
-            var model = new BillDetails();
+            var model = new NewBillTypeDetails();
             model.Type = new BillType();
-            model.PriceParts = new List<BillPricePart> { new BillPricePart(), new BillPricePart() };
+            model.PriceParts = Enumerable.Range(0, Count).Select(x => new BillPricePart() ).ToList();
+            ViewBag.Count = Count + 1;
             return View(model);
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<BillDetails>> CreatePost([FromForm] BillDetails BillData)
+        public async Task<ActionResult<NewBillTypeDetails>> CreatePost([FromForm] NewBillTypeDetails billData)
         {
+            _context.BillTypes.Add(billData.Type);
+            foreach(var billPart in billData.PriceParts)
+            {
+                billPart.Type = billData.Type;
+                _context.BillPriceParts.Add(billPart);
+            }
 
-            return CreatedAtAction("Create", BillData);
+
+            _context.SaveChanges();
+
+            return CreatedAtAction("Create", billData);
         }
 
         [HttpGet("{id}")]

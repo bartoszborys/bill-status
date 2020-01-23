@@ -7,12 +7,13 @@ using BillStatus.Models;
 
 namespace BillStatus.Models.Contexts
 {
-    public class BillTypeContext : DbContext
+    public class BillContext : DbContext
     {
         public DbSet<BillType> BillTypes { get; set; }
+        public DbSet<BillPricePart> BillPriceParts { get; set; }
+        public DbSet<BillMeasure> BillMeasures { get; set; }
 
-        public BillTypeContext(DbContextOptions<BillTypeContext> options) : base(options) { }
+        public BillContext(DbContextOptions<BillContext> options) : base(options) { }
 
-        public DbSet<BillStatus.Models.BillPricePart> BillPricePart { get; set; }
     }
 }

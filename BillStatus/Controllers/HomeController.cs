@@ -14,7 +14,7 @@ namespace BillStatus.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, BillTypeContext db)
+        public HomeController(ILogger<HomeController> logger, BillContext db)
         {
             _logger = logger;
         }

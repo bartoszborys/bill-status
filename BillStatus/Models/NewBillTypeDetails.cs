@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BillStatus.Models
 {
-    public class BillDetails
+    public class NewBillTypeDetails
     {
         public BillType Type { get; set; }
         public List<BillPricePart> PriceParts { get; set; }

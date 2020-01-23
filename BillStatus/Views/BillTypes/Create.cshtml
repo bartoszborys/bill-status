@@ -1,4 +1,4 @@
-﻿@model BillStatus.Models.BillDetails
+﻿@model BillStatus.Models.NewBillTypeDetails
 
 @{
     ViewData["Title"] = "Create";
@@ -20,17 +20,24 @@
             @for (int i = 0; i < Model.PriceParts.Count(); i++)
             {
                 <div class="form-group">
+                    @Html.TextBoxFor(model => model.PriceParts[i].Name)
                     @Html.TextBoxFor(model => model.PriceParts[i].Value)
                     @Html.CheckBoxFor(model => model.PriceParts[i].Constant)
                 </div>
             }
+            <a 
+                type="button" 
+                value="Some text" 
+                asp-controller="BillTypes"
+                asp-action="Create"
+                asp-route-count="@ViewBag.Count"
+            >LINK</a>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
