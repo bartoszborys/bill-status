@@ -4,51 +4,50 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>BillType</h4>
+<h1>Utwórz nowy rodzaj opłaty</h1>
+<h6>Uzupełnij formularz, dodająć nazwę rachunku oraz jego składowe, a następnie wciśnij przycisk zapisz.</h6>
 <hr />
 <div class="row">
     <tr class="col-md-4">
-        <form class="bill-type-form" asp-action="Create">
+        <form class="bill-type-form  w-100" asp-action="Create">
             <div class="form-group">
                 <input id="addBillPricePart" type="button" value="Dodaj częściową opłate" class="btn btn-success" />
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" onclick="document.querySelector('.bill-type-form').reportValidity()" value="Zapisz" class="btn btn-primary" />
             </div>
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Type.Name" class="control-label"></label>
-                <input asp-for="Type.Name" class="form-control" />
+                <input required asp-for="Type.Name" class="form-control" />
                 <span asp-validation-for="Type.Name" class="text-danger"></span>
             </div>
-            <table class="bill-type-form__price-parts-container">
-                <thead>
+            <table class="table table-striped">
+                <thead class="thead-dark">
                     <tr>
-                        <th>Nazwa</th>
-                        <th>Wartość</th>
-                        <th>Stała</th>
-                        <th></th>
+                        <th scope="col">Nazwa</th>
+                        <th scope="col">Wartość</th>
+                        <th scope="col">Stała</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bill-type-form__price-parts-container">
                     <tr class="form-group bill-type-form__bill-type bill-type-form__bill-type--root">
                         <td>
-                            @Html.TextBoxFor(model => model.PriceParts[0].Name)
+                            @Html.TextBoxFor(model => model.PriceParts[0].Name, new { @class = "form-control", type = "text", required = "required" })
                         </td>
                         <td>
-                            @Html.TextBoxFor(model => model.PriceParts[0].Value)
+                            @Html.TextBoxFor(model => model.PriceParts[0].Value, new { @class = "form-control", type = "number", required = "required", min = 0})
                         </td>
                         <td>
-                            @Html.CheckBoxFor(model => model.PriceParts[0].Constant)
+                            @Html.CheckBoxFor(model => model.PriceParts[0].Constant, new { @class = "form-control form-control-custom" })
+                        </td>
+                        <td>
+                            <input type="button" value="Usuń" class="form-control btn btn-sm btn-danger invisible bill-type-form__remove-button" />
                         </td>
                     </tr>
                 </tbody>
             </table>
         </form>
     </div>
-</div>
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -58,19 +57,19 @@
             const pricePartRoot = jQuery('.bill-type-form__bill-type--root');
             const newFormIndex = pricePartsContainer.get(0).childElementCount;
 
-            const nativeElements = [...pricePartRoot.children().clone()]
-            const newPricePartFormElements = nativeElements.querySelectorAll("input")].map((item, index) => this.setItemIndex(item, newFormIndex));
+            const nativeRoot = pricePartRoot.clone();
+            [...(nativeRoot.get(0).querySelectorAll("input"))].forEach((item, index) => this.setItemIndex(item, newFormIndex));
 
-            const removePartButton = jQuery(`<input type="button" value="Usuń" class="btn btn-sm btn-danger"/>`);
+            const removePartButton = nativeRoot.find('.bill-type-form__remove-button');
+            removePartButton.removeClass("invisible");
             removePartButton.click(
                 event => {
-                    const parentContainer = removePartButton.parent().get(0)
+                    const parentContainer = removePartButton.parent().parent().get(0)
                     const nativeRootPricePartsContainer = pricePartsContainer.get(0);
                     const nativePricePartsContainers = [...(nativeRootPricePartsContainer.children)];
                     let degrade = false;
                     nativePricePartsContainers.forEach((item, containerIndex) => {
                         if (degrade) {
-                            debugger;
                             [...(item.querySelectorAll("input"))].forEach(inputItem => this.setItemIndex(inputItem, containerIndex - 1))
                         }
 
@@ -83,8 +82,7 @@
             )
             
             const pricePartContainer = jQuery('<tr class="form-group bill-type-form__bill-type"></tr>')
-            newPricePartFormElements.push(removePartButton);
-            pricePartContainer.append(newPricePartFormElements);
+            pricePartContainer.append(nativeRoot.children());
             pricePartsContainer.append(pricePartContainer);
         });
 
