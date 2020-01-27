@@ -31,12 +31,12 @@ namespace BillStatus.Controllers
 
 
         [HttpGet("create")]
-        public IActionResult Create([FromQuery] int Count)
+        public IActionResult Create()
         {
             var model = new NewBillTypeDetails();
             model.Type = new BillType();
-            model.PriceParts = Enumerable.Range(0, Count).Select(x => new BillPricePart() ).ToList();
-            ViewBag.Count = Count + 1;
+            model.PriceParts = new List<BillPricePart>();
+            model.PriceParts.Add(new BillPricePart());
             return View(model);
         }
 
