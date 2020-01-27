@@ -1,0 +1,79 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<div class="d-flex flex-column">
+    <div class="form-group">
+        <label class="control-label">Wybierz rachunek</label>
+        <select id="billTypeId" class="form-control" asp-items="ViewBag.TypeID"></select>
+    </div>
+    <div class="form-group">
+        <label for="periodFrom" class="control-label">Okres od: </label>
+        <input id="periodFrom" class="form-control" type="datetime-local" />
+    </div>
+    <div class="form-group">
+        <label for="periodTo" class="control-label">Okres do: </label>
+        <input id="periodTo" class="form-control" type="datetime-local" />
+    </div>
+    <div>
+        <input type="button" class="btn btn-primary" value="Pokaż" onclick="loadData()"/>
+    </div>
+    <div>
+        <span id="payDayMoney" class="text-info"></span>
+    </div>
+    <div class="flex-fill">
+        <canvas id="myChart"  width="400" height="400"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+
+        async function loadData() {
+            const typeId = document.getElementById('billTypeId').value;
+            const periodFrom = document.getElementById('periodFrom').value;
+            const periodTo = document.getElementById('periodTo').value;
+
+            //"id":1,"typeID":6,"type":null,"value":23.4,"createdAt":"2020-01-27T12:00:00"
+            const measures = await (fetch(`Statistics/Measures/${typeId}?periodFrom=${periodFrom}&periodTo=${periodTo}`).then(x => x.json()))
+            const PriceParts = await (fetch(`Statistics/PriceParts/${typeId}`).then(x => x.json()))
+
+            const values = measures.map(item => item.value);
+            const lastValue = values.slice(-1).pop();
+
+            const estimatedPayDayValue = ((lastValue || 0) / (values.length || 1)) * 31;
+            const payDayMoney = PriceParts.map(item => item.value * ((item.constant) ? 1 : estimatedPayDayValue)).reduce((a,b) => a + b);
+
+            document.getElementById('payDayMoney').textContent = `Przewidywana kwota do zapłaty: ${payDayMoney.toFixed(2)} zł.`;
+
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: measures.map(item => item.createdAt),
+                    datasets: [{
+                        label: 'Stan licznika:',
+                        data: values,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    </script>
+}
