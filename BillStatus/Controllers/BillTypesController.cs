@@ -41,19 +41,17 @@ namespace BillStatus.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<NewBillTypeDetails>> CreatePost([FromForm] NewBillTypeDetails billData)
+        public void CreatePost([FromForm] NewBillTypeDetails billData)
         {
             _context.BillTypes.Add(billData.Type);
             foreach(var billPart in billData.PriceParts)
             {
                 billPart.Type = billData.Type;
                 _context.BillPriceParts.Add(billPart);
-                }
-
+            }
 
             _context.SaveChanges();
-
-            return CreatedAtAction("Create", billData);
+            Redirect("/BillMeasures");
         }
 
         [HttpGet("{id}")]
