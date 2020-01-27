@@ -48,7 +48,7 @@ namespace BillStatus.Controllers
             {
                 billPart.Type = billData.Type;
                 _context.BillPriceParts.Add(billPart);
-            }
+                }
 
 
             _context.SaveChanges();
