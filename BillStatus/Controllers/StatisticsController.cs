@@ -33,7 +33,8 @@ namespace BillStatus.Controllers
             return this._context.BillMeasures
                 .Where(x => x.Type.Id == billTypeId)
                 .Where(x => x.CreatedAt > periodFrom)
-                .Where(x => x.CreatedAt < periodTo);
+                .Where(x => x.CreatedAt < periodTo)
+                .OrderBy( x => x.CreatedAt);
         }
 
         [HttpGet("PriceParts/{billTypeId}")]

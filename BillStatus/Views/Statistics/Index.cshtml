@@ -1,4 +1,4 @@
-﻿@{
+﻿    @{
     ViewData["Title"] = "Index";
 }
 
@@ -41,8 +41,9 @@
 
             const values = measures.map(item => item.value);
             const lastValue = values.slice(-1).pop();
+            const daysCount = new Date((new Date(measures[measures.length - 1].createdAt) - new Date(measures[0].createdAt))).getDate();
 
-            const estimatedPayDayValue = ((lastValue || 0) / (values.length || 1)) * 31;
+            const estimatedPayDayValue = ((lastValue || 0) / (daysCount || 1)) * 31;
             const payDayMoney = PriceParts.map(item => item.value * ((item.constant) ? 1 : estimatedPayDayValue)).reduce((a,b) => a + b);
 
             document.getElementById('payDayMoney').textContent = `Przewidywana kwota do zapłaty: ${payDayMoney.toFixed(2)} zł.`;
